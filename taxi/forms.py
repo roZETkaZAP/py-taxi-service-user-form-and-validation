@@ -11,7 +11,7 @@ User = get_user_model()
 class DriverLicenseValidationMixin:
 
     def clean_license_number(self):
-        license_number = self.cleaned_data.get('license_number')
+        license_number = self.cleaned_data.get("license_number")
         if len(license_number) != 8:
             raise ValidationError("License number is invalid")
         if (not license_number[:3].isalpha()
