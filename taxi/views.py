@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -8,6 +9,9 @@ from django.shortcuts import redirect
 
 from .forms import DriverCreationForm, DriverLicenseUpdateForm, CarCreationFrom
 from .models import Driver, Car, Manufacturer
+
+
+user_driver = get_user_model()
 
 
 @login_required
@@ -71,7 +75,7 @@ class CarDetailView(LoginRequiredMixin, generic.DetailView):
     def assign_or_delete(self, request, *args, **kwargs):
         username = request.user.username
         action = request.POST.get("action")
-        driver = Driver.objects.get(username=username)
+        driver = user_driver.objects.get(username=username)
         car = self.get_object()
         if action == "delete":
             car.drivers.remove(driver)
@@ -103,7 +107,7 @@ class DriverListView(LoginRequiredMixin, generic.ListView):
 
 class DriverDetailView(LoginRequiredMixin, generic.DetailView):
     model = Driver
-    queryset = Driver.objects.all().prefetch_related("cars__manufacturer")
+    queryset = user_driver.objects.all().prefetch_related("cars__manufacturer")
 
 
 class DriverCreateView(LoginRequiredMixin, generic.CreateView):

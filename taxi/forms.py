@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
 
-from taxi.models import Driver, Car
+from taxi.models import Car
 
 User = get_user_model()
 
@@ -12,7 +12,7 @@ class DriverLicenseValidationMixin:
 
     def clean_license_number(self):
         license_number = self.cleaned_data.get("license_number")
-        if len(license_number) != 8:
+        if license_number is None or len(license_number) != 8:
             raise ValidationError("License number is invalid")
         if (not license_number[:3].isalpha()
                 or license_number[:3].upper() != license_number[:3]):
